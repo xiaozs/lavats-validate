@@ -21,6 +21,8 @@ export default function (env: any): webpack.Configuration {
             filename: env.out,
             path: path.resolve(__dirname, 'dist'),
             libraryTarget: config.libraryTarget,
+            globalObject: "this",
+            library: isEsm ? undefined : "lavatsValidate"
         },
         experiments: {
             outputModule: isEsm

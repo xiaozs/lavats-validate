@@ -38,7 +38,7 @@ import { Type } from "lavats-validate";
 
 ### \<script>
 ```html
-<script src="./node_modules/lavats-validate/dist/index.js"></script>
+<script src="./node_modules/lavats-validate/dist/umd.js"></script>
 <script>
 
 var Type = lavatsValidate.Type;
