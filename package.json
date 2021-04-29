@@ -11,7 +11,9 @@
     "build:esm.min": "webpack --env out=esm.min.js",
     "build:umd": "webpack --env out=umd.js",
     "build:esm": "webpack --env out=esm.js",
-    "build": "npm run build:umd.min && npm run build:esm.min && npm run build:umd && npm run build:esm"
+    "build": "npm run build:umd.min && npm run build:esm.min && npm run build:umd && npm run build:esm",
+    "doc": "typedoc src/index.ts --out ./docs",
+    "prepublish": "npm run build"
   },
   "keywords": [],
   "author": "",
@@ -26,8 +28,20 @@
     "qunit": "^2.15.0",
     "ts-loader": "^9.1.1",
     "ts-node": "^9.1.1",
+    "typedoc": "^0.20.36",
     "typescript": "^4.2.4",
     "webpack": "^5.36.1",
     "webpack-cli": "^4.6.0"
-  }
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaozs/lavats-validate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xiaozs/lavats-validate/issues"
+  },
+  "homepage": "https://github.com/xiaozs/lavats-validate#readme"
 }
