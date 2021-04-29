@@ -61,6 +61,12 @@
 				<a href="#lavats-validate" id="lavats-validate" style="color: inherit; text-decoration: none;">
 					<h1>lavats-validate</h1>
 				</a>
+				<p>lavats-validate是一个由typescript写成的类型验证器。</p>
+				<p>支持同步、异步验证。</p>
+				<a href="#文档" id="文档" style="color: inherit; text-decoration: none;">
+					<h2>文档</h2>
+				</a>
+				<p><a href="https://xiaozs.github.io/lavats-validate/">文档链接</a></p>
 				<a href="#安装" id="安装" style="color: inherit; text-decoration: none;">
 					<h2>安装</h2>
 				</a>
@@ -104,7 +110,200 @@
 				<a href="#使用" id="使用" style="color: inherit; text-decoration: none;">
 					<h2>使用</h2>
 				</a>
-				<pre><code class="language-js">
+				<ul>
+					<li>配置类型
+						```js
+					import { Type } from &quot;lavats-validate&quot;;</li>
+				</ul>
+				<p>// 任何类型
+				let type = Type.any;</p>
+				<p>// 数组类型
+				type = Type.array();</p>
+				<p>// 数组类型，带子元素类型验证，或逻辑
+					type = Type.array([
+					Type.string,    // 字符串类型
+					Type.number,    // 数字类型
+				]);</p>
+				<p>// 数组类型，长度校验
+					type = Type.array.length(5);               // 5 &lt;= length
+					type = Type.array.length(5, 10);           // 5 &lt;= length &lt;= 10
+				type = Type.array.length(5, 10, false);    // 5 &lt;= length &lt;  10</p>
+				<p>// 布尔类型
+				type = Type.boolean;</p>
+				<p>// 日期类型
+				type = Type.date;</p>
+				<p>// 日期类型，范围校验
+					type = Type.date.range(date);               // date &lt;= range
+					type = Type.date.range(date1, date2);       // date1 &lt;= range &lt;= date2
+				type = Type.date.range(date1, date2, false);// date1 &lt;= range &lt;  date2</p>
+				<p>// 枚举类型, 值可以是 &quot;1&quot; 或 1 或 null
+				type = Type.enum([&quot;1&quot;, 1, null]);</p>
+				<p>// 函数类型
+				type = Type.function;</p>
+				<p>// 数字类型
+				type = Type.number;</p>
+				<p>// 数字类型，整数
+				type = Type.number.int;</p>
+				<p>// 数字类型，浮点数
+				type = Type.number.float;</p>
+				<p>// 数字类型，范围校验
+					type = Type.number.range(5);               // 5 &lt;= range
+					type = Type.number.range(5, 10);           // 5 &lt;= range &lt;= 10
+				type = Type.number.range(5, 10, false);    // 5 &lt;= range &lt;  10</p>
+				<p>// 对象类型
+				type = Type.object()</p>
+				<p>// 对象类型，特定类型
+				class Test {</p>
+				<p>}
+				type = Type.object().type(Test)</p>
+				<p>// 对象类型，带属性类型校验，与逻辑
+					type = Type.object({
+					key1: Type.string,  // 字符串类型
+					key2: Type.string   // 字符串类型
+				})</p>
+				<p>// 正则类型
+				type = Type.regExp;</p>
+				<p>// 字符串类型
+				type = Type.string;</p>
+				<p>// 字符串类型，长度校验
+					type = Type.string.length(5);               // 5 &lt;= length
+					type = Type.string.length(5, 10);           // 5 &lt;= length &lt;= 10
+				type = Type.string.length(5, 10, false);    // 5 &lt;= length &lt;  10</p>
+				<p>// 字符串类型，正则校验
+				type = Type.string.pattern(/^[0-9]+$/);</p>
+				<p>// 可空类型
+				type = type.nullable;</p>
+				<p>// 自定义校验，同步
+					type = type.custom(val =&gt; {
+					let isError = true;
+					if(isError) return &quot;errorMessage&quot;;
+				})</p>
+				<p>// 自定义校验，异步
+					type = type.custom(async val =&gt; {
+					await wait(10);
+					let isError = true;
+					if(isError) return &quot;errorMessage&quot;;
+				})</p>
+				<pre><code>
+<span style="color: #000000">* </span><span style="color: #001080">同步校验</span>
+<span style="color: #A31515">```js</span>
+<span style="color: #A31515">let type = Type.object({</span>
+<span style="color: #A31515">    key1: Type.string.nullable,</span>
+<span style="color: #A31515">    key2: Type.string</span>
+<span style="color: #A31515">});</span>
+
+<span style="color: #A31515">let res = Type.checkSync({</span>
+<span style="color: #A31515">    key2: 1</span>
+<span style="color: #A31515">})</span>
+
+<span style="color: #A31515">res   // =&gt; [{ path: [&quot;key2&quot;], errorMessage: &quot;不是字符串&quot; }]</span>
+
+<span style="color: #A31515">try {</span>
+<span style="color: #A31515">    Type.validate({ key2: 1 });</span>
+<span style="color: #A31515">} catch(e) {</span>
+<span style="color: #A31515">    e // =&gt; [{ path: [&quot;key2&quot;], errorMessage: &quot;不是字符串&quot; }]</span>
+<span style="color: #A31515">}</span>
+
+</code></pre>
+				<ul>
+					<li>异步校验
+						```js
+						let type = Type.object({
+						key1: Type.string.custom(async val =&gt; {<pre><code><span style="color: #000000">  </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #795E26">wait</span><span style="color: #000000">(</span><span style="color: #098658">10</span><span style="color: #000000">);</span>
+<span style="color: #000000">  </span><span style="color: #AF00DB">if</span><span style="color: #000000">(</span><span style="color: #001080">val</span><span style="color: #000000"> !== </span><span style="color: #A31515">&quot;async&quot;</span><span style="color: #000000">) </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;字符串不为&#039;async&#039;&quot;</span><span style="color: #000000">; </span>
+</code></pre>
+						}),
+						key2: Type.string
+					});</li>
+				</ul>
+				<p>let item = {
+					key1: &quot;sync&quot;,
+					key2: &quot;&quot;
+				};</p>
+				<p>let res = await Type.check(item)
+				res   // =&gt; [{ path: [&quot;key1&quot;], errorMessage: &quot;字符串不为&#39;async&#39;&quot; }]</p>
+				<p>try {
+					Type.validate({ key2: 1 });
+					} catch(e) {
+					e // =&gt; [{ path: [&quot;key1&quot;], errorMessage: &quot;字符串不为&#39;async&#39;&quot; }]
+				}</p>
+				<pre><code>
+<span style="color: #000000">* </span><span style="color: #001080">获取异步校验函数</span>
+<span style="color: #A31515">```js</span>
+<span style="color: #A31515">let type = Type.object({</span>
+<span style="color: #A31515">    key1: Type.string.custom(async val =&gt; {</span>
+<span style="color: #A31515">        await wait(10);</span>
+<span style="color: #A31515">        if(val !== &quot;async&quot;) return &quot;字符串不为&#039;async&#039;&quot;; </span>
+<span style="color: #A31515">    }),</span>
+<span style="color: #A31515">    key2: Type.string</span>
+<span style="color: #A31515">});</span>
+
+<span style="color: #A31515">let item = {</span>
+<span style="color: #A31515">    key1: &quot;sync&quot;,</span>
+<span style="color: #A31515">    key2: &quot;&quot;</span>
+<span style="color: #A31515">};</span>
+
+<span style="color: #A31515">let Checker = type.getAsyncChecker();</span>
+<span style="color: #A31515">let validator = type.getAsyncValidator();</span>
+
+<span style="color: #A31515">let res = await checker(item);</span>
+<span style="color: #A31515">res   // =&gt; [{ path: [&quot;key1&quot;], errorMessage: &quot;字符串不为&#039;async&#039;&quot; }]</span>
+
+<span style="color: #A31515">try {</span>
+<span style="color: #A31515">    validator({ key2: 1 });</span>
+<span style="color: #A31515">} catch(e) {</span>
+<span style="color: #A31515">    e // =&gt; [{ path: [&quot;key1&quot;], errorMessage: &quot;字符串不为&#039;async&#039;&quot; }]</span>
+<span style="color: #A31515">}</span>
+
+</code></pre>
+				<ul>
+					<li>获取同步校验函数
+						```js
+						let type = Type.object({
+						key1: Type.string.nullable,
+						key2: Type.string
+					});</li>
+				</ul>
+				<p>let item = {
+					key2: 1
+				};</p>
+				<p>let checker = type.getSyncChecker();
+				let validator = type.getSyncValidator();</p>
+				<p>let res = checker(item);
+				res   // =&gt; [{ path: [&quot;key2&quot;], errorMessage: &quot;不是字符串&quot; }]</p>
+				<p>try {
+					validator(item);
+					} catch(e) {
+					e // =&gt; [{ path: [&quot;key2&quot;], errorMessage: &quot;不是字符串&quot; }]
+				}</p>
+				<pre><code>
+<span style="color: #000000">## </span><span style="color: #001080">注意</span>
+<span style="color: #001080">当检验类型中含有异步校验时</span><span style="color: #000000">，</span><span style="color: #001080">不能使用同步方法进行校验</span><span style="color: #000000">，</span><span style="color: #001080">否则将抛出异常</span>
+<span style="color: #A31515">```js</span>
+<span style="color: #A31515">let type = Type.any.custom(async val =&gt; {</span>
+<span style="color: #A31515">    await wait(10);</span>
+<span style="color: #A31515">});</span>
+
+<span style="color: #A31515">try {</span>
+<span style="color: #A31515">    let res = type.checkSync({});</span>
+<span style="color: #A31515">} catch(e) {</span>
+<span style="color: #A31515">    e // =&gt; new Error(&quot;该类型不能使用同步校验&quot;)</span>
+<span style="color: #A31515">}</span>
+</code></pre>
+				<a href="#复杂校验" id="复杂校验" style="color: inherit; text-decoration: none;">
+					<h2>复杂校验</h2>
+				</a>
+				<p><code>Type</code>的每一次<code>.</code>操作都会生成一个新的<code>Type</code>对象，所以可以通过不断的进行链式调用，丰富校验的描述</p>
+				<pre><code class="language-js"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">type</span><span style="color: #000000"> = </span><span style="color: #001080">Type</span><span style="color: #000000">.</span><span style="color: #795E26">object</span><span style="color: #000000">({</span>
+<span style="color: #000000">    </span><span style="color: #001080">key1:</span><span style="color: #000000"> </span><span style="color: #001080">Type</span><span style="color: #000000">.</span><span style="color: #795E26">object</span><span style="color: #000000">().</span><span style="color: #001080">nullable</span><span style="color: #000000">.</span><span style="color: #795E26">custom</span><span style="color: #000000">(</span><span style="color: #001080">obj</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">        </span><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">keys</span><span style="color: #000000"> = </span><span style="color: #267F99">Object</span><span style="color: #000000">.</span><span style="color: #795E26">keys</span><span style="color: #000000">(</span><span style="color: #001080">obj</span><span style="color: #000000">);</span>
+<span style="color: #000000">        </span><span style="color: #AF00DB">if</span><span style="color: #000000">(</span><span style="color: #001080">keys</span><span style="color: #000000">.</span><span style="color: #001080">length</span><span style="color: #000000"> &lt; </span><span style="color: #098658">10</span><span style="color: #000000">) </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;对象字段不足10个&quot;</span><span style="color: #000000">;</span>
+<span style="color: #000000">    }),</span>
+<span style="color: #000000">    </span><span style="color: #001080">key2:</span><span style="color: #000000"> </span><span style="color: #001080">Type</span><span style="color: #000000">.</span><span style="color: #795E26">array</span><span style="color: #000000">([</span>
+<span style="color: #000000">        </span><span style="color: #001080">Type</span><span style="color: #000000">.</span><span style="color: #001080">string</span><span style="color: #000000">.</span><span style="color: #001080">nullable</span><span style="color: #000000">.</span><span style="color: #795E26">length</span><span style="color: #000000">(</span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">),</span>
+<span style="color: #000000">        </span><span style="color: #001080">Type</span><span style="color: #000000">.</span><span style="color: #001080">number</span><span style="color: #000000">.</span><span style="color: #001080">float</span><span style="color: #000000">.</span><span style="color: #795E26">range</span><span style="color: #000000">(</span><span style="color: #098658">5</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">)</span>
+<span style="color: #000000">    ]).</span><span style="color: #001080">nullable</span>
+<span style="color: #000000">})</span>
 </code></pre>
 			</div>
 		</div>

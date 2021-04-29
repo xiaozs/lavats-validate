@@ -324,7 +324,7 @@ export abstract class Type {
         for (let validator of this.validators) {
             let newPath = key ? [...path, key] : path;
             let msg = validator(value, object, key, newPath);
-            if (msg instanceof Promise) throw new Error("被类型不能使用同步校验");
+            if (msg instanceof Promise) throw new Error("该类型不能使用同步校验");
             if (msg) {
                 errors.push({
                     path,
