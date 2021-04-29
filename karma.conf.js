@@ -31,7 +31,11 @@ module.exports = function (config) {
       "**/*.ts": "karma-typescript"
     },
     karmaTypescriptConfig: {
-      tsconfig: "./tsconfig.json"
+      tsconfig: "./tsconfig.json",
+      include:[
+        "./src",
+        "./test"
+      ]
     },
 
 

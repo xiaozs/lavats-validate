@@ -2,9 +2,16 @@
   "name": "lavats-validate",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/umd.js",
+  "module": "dist/esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "build:umd.min": "webpack --env out=umd.min.js",
+    "build:esm.min": "webpack --env out=esm.min.js",
+    "build:umd": "webpack --env out=umd.js",
+    "build:esm": "webpack --env out=esm.js",
+    "build": "npm run build:umd.min && npm run build:esm.min && npm run build:umd && npm run build:esm"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +24,10 @@
     "karma-qunit": "^4.1.2",
     "karma-typescript": "^5.5.1",
     "qunit": "^2.15.0",
+    "ts-loader": "^9.1.1",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "webpack": "^5.36.1",
+    "webpack-cli": "^4.6.0"
   }
 }

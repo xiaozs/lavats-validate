@@ -1,5 +1,3 @@
-import { test } from "qunit";
-
 interface MessageType {
     "object.base": string,
     "object.type": string,
@@ -67,9 +65,9 @@ export function config(errors: Partial<MessageType>) {
  * 获取文本
  * @param key 文本索引
  */
-function getMessage(key: keyof MessageType, args: IArguments) {
+function getMessage(key: keyof MessageType, args?: IArguments) {
     return errorMessages[key].replace(/{([0-9]+)}/, ($$, $1) => {
-        return args[$1].toString();
+        return args?.[$1]?.toString() ?? $1;
     })
 }
 
@@ -429,8 +427,9 @@ export class ObjectType extends Type {
      * 符合类型
      */
     type<T, Args extends any[]>(klass: IConstructor<T, Args>) {
+        let args = arguments;
         return this.custom(value => {
-            if (!(value instanceof klass)) return getMessage("object.type", arguments);
+            if (!(value instanceof klass)) return getMessage("object.type", args);
         });
     }
 
@@ -453,7 +452,7 @@ export class ObjectType extends Type {
     async baseValidate(obj: any, object?: any, key?: string, path: string[] = []) {
         if (Object.prototype.toString.call(obj) !== "[object Object]") return [{
             path,
-            message: getMessage("object.base", arguments)
+            message: getMessage("object.base")
         }];
 
         let pArr: Promise<ErrorMessage[]>[] = [];
@@ -491,13 +490,14 @@ export class StringType extends Type {
      */
     length(min: number, max?: number, include = true) {
         if (max !== undefined && min > max) throw new Error("min > max");
+        let args = arguments;
         return this.custom(value => {
-            if (value.length < min) return getMessage("string.length.min", arguments);
+            if (value.length < min) return getMessage("string.length.min", args);
             if (max !== undefined) {
                 if (include) {
-                    if (value.length > max) return getMessage("string.length.max", arguments);
+                    if (value.length > max) return getMessage("string.length.max", args);
                 } else {
-                    if (value.length >= max) return getMessage("string.length.max", arguments);
+                    if (value.length >= max) return getMessage("string.length.max", args);
                 }
             }
         });
@@ -508,8 +508,9 @@ export class StringType extends Type {
      * @param reg 正则表达式
      */
     pattern(reg: RegExp) {
+        let args = arguments;
         return this.custom(value => {
-            if (!reg.test(value)) return getMessage("string.pattern", arguments);
+            if (!reg.test(value)) return getMessage("string.pattern", args);
         })
     }
 }
@@ -530,12 +531,13 @@ export class NumberType extends Type {
      * 为整数
      */
     get int() {
+        let args = arguments;
         return this.custom(value => {
             if (
                 typeof value === "number" &&
                 ~~value !== value
             ) {
-                return getMessage("number.int", arguments);
+                return getMessage("number.int", args);
             }
         })
     }
@@ -544,12 +546,13 @@ export class NumberType extends Type {
      * 为浮点数
      */
     get float() {
+        let args = arguments;
         return this.custom(value => {
             if (
                 typeof value === "number" &&
                 value % 1 === 0
             ) {
-                return getMessage("number.float", arguments);
+                return getMessage("number.float", args);
             }
         })
     }
@@ -562,13 +565,14 @@ export class NumberType extends Type {
      */
     range(min: number, max?: number, include = true) {
         if (max !== undefined && min > max) throw new Error("min > max");
+        let args = arguments;
         return this.custom(value => {
-            if (value < min) return getMessage("number.range.min", arguments);
+            if (value < min) return getMessage("number.range.min", args);
             if (max !== undefined) {
                 if (include) {
-                    if (value > max) return getMessage("number.range.max", arguments);
+                    if (value > max) return getMessage("number.range.max", args);
                 } else {
-                    if (value >= max) return getMessage("number.range.max", arguments);
+                    if (value >= max) return getMessage("number.range.max", args);
                 }
             }
         });
@@ -650,7 +654,7 @@ export class ArrayType extends Type {
     async baseValidate(arr: any, object?: any, key?: string, path: string[] = []) {
         if (!Array.isArray(arr)) return [{
             path,
-            message: getMessage("array.base", arguments)
+            message: getMessage("array.base")
         }];
 
         let outterArr: Promise<ErrorMessage[]>[] = [];
@@ -681,7 +685,7 @@ export class ArrayType extends Type {
         let isMatch = resArr.some(arr => arr.length === 0);
         return isMatch ? [] : [{
             path,
-            message: getMessage("array.types", arguments)
+            message: getMessage("array.types")
         }];
     }
 
@@ -693,13 +697,14 @@ export class ArrayType extends Type {
      */
     length(min: number, max?: number, include = true) {
         if (max !== undefined && min > max) throw new Error("min > max");
+        let args = arguments;
         return this.custom(value => {
-            if (value.length < min) return getMessage("array.length.min", arguments);
+            if (value.length < min) return getMessage("array.length.min", args);
             if (max !== undefined) {
                 if (include) {
-                    if (value.length > max) return getMessage("array.length.max", arguments);
+                    if (value.length > max) return getMessage("array.length.max", args);
                 } else {
-                    if (value.length >= max) return getMessage("array.length.max", arguments);
+                    if (value.length >= max) return getMessage("array.length.max", args);
                 }
             }
         });
@@ -737,13 +742,14 @@ export class DateType extends Type {
      */
     range(min: Date, max?: Date, include = true) {
         if (max !== undefined && min > max) throw new Error("min > max");
+        let args = arguments;
         return this.custom(value => {
-            if (value < min) return getMessage("date.range.min", arguments);
+            if (value < min) return getMessage("date.range.min", args);
             if (max !== undefined) {
                 if (include) {
-                    if (value > max) return getMessage("date.range.max", arguments);
+                    if (value > max) return getMessage("date.range.max", args);
                 } else {
-                    if (value >= max) return getMessage("date.range.max", arguments);
+                    if (value >= max) return getMessage("date.range.max", args);
                 }
             }
         });
