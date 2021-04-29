@@ -1,5 +1,6 @@
-import { assert, module, test } from "qunit";
 import { AnyType, ArrayType, BooleanType, DateType, EnumType, FunctionType, NumberType, ObjectType, RegExpType, StringType, Type } from "../src"
+
+let { assert, test } = QUnit;
 
 async function wait(ms: number) {
     return new Promise(resolve => {
@@ -7,7 +8,7 @@ async function wait(ms: number) {
     })
 }
 
-module("Type 静态方法", () => {
+QUnit.module("Type 静态方法", () => {
     test("object", () => {
         assert.ok(Type.object() instanceof ObjectType);
     })
@@ -40,7 +41,7 @@ module("Type 静态方法", () => {
     })
 });
 
-module("Type 普通方法", () => {
+QUnit.module("Type 普通方法", () => {
     let syncType = Type.object({
         "key1": Type.string
     });
@@ -163,7 +164,7 @@ module("Type 普通方法", () => {
 })
 
 
-module("ObjectType 的方法", () => {
+QUnit.module("ObjectType 的方法", () => {
 
     test("基础同步使用", () => {
         let type = Type.object({
@@ -242,7 +243,7 @@ module("ObjectType 的方法", () => {
 })
 
 
-module("StringType 的方法", () => {
+QUnit.module("StringType 的方法", () => {
     test("基本使用", () => {
         let type = Type.string;
 
@@ -310,7 +311,7 @@ module("StringType 的方法", () => {
 
 })
 
-module("NumberType 的方法", () => {
+QUnit.module("NumberType 的方法", () => {
     test("基本使用", () => {
         let type = Type.number;
 
@@ -393,7 +394,7 @@ module("NumberType 的方法", () => {
     })
 })
 
-module("BooleanType 的方法", () => {
+QUnit.module("BooleanType 的方法", () => {
     test("基本使用", () => {
         let type = Type.boolean;
 
@@ -405,7 +406,7 @@ module("BooleanType 的方法", () => {
     })
 })
 
-module("FunctionType 的方法", () => {
+QUnit.module("FunctionType 的方法", () => {
     test("基本使用", () => {
         let type = Type.function;
 
@@ -417,7 +418,7 @@ module("FunctionType 的方法", () => {
     })
 })
 
-module("RegExpType 的方法", () => {
+QUnit.module("RegExpType 的方法", () => {
     test("基本使用", () => {
         let type = Type.regExp;
 
@@ -429,7 +430,7 @@ module("RegExpType 的方法", () => {
     })
 })
 
-module("ArrayType 的方法", () => {
+QUnit.module("ArrayType 的方法", () => {
     test("基本使用", () => {
         let type = Type.array();
 
@@ -517,7 +518,7 @@ module("ArrayType 的方法", () => {
     })
 })
 
-module("AnyType 的方法", () => {
+QUnit.module("AnyType 的方法", () => {
     test("基本使用", () => {
         let type = Type.any;
 
@@ -529,7 +530,7 @@ module("AnyType 的方法", () => {
     })
 })
 
-module("DateType 的方法", () => {
+QUnit.module("DateType 的方法", () => {
 
     test("基本使用", () => {
         let type = Type.date;
@@ -590,7 +591,7 @@ module("DateType 的方法", () => {
     })
 })
 
-module("性能约束", () => {
+QUnit.module("性能约束", () => {
     test("ObjectType 各个属性并发验证", async (assert) => {
         // @ts-ignore
         assert.timeout(80);
